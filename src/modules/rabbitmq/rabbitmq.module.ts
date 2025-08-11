@@ -5,5 +5,6 @@ import { RabbitMQChannel } from './providers/rabbitmq-channel.provider';
 
 @Module({
   providers: [RabbitMQConnection, RabbitMQChannel],
+  exports: [RabbitMQChannel],
 })
 export class RabbitMQModule extends ConfigurableModuleClass {}

@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
-import { RabbitMQChannel } from '../rabbitmq/providers/rabbitmq-channel.provider';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { XRay, XRaySchema } from './schemas/x-ray.schema';
 import { SignalService } from './services/signal.service';
+import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
-    RabbitMQChannel,
+    RabbitMQModule.register({
+      url: 'amqp://admin:password@localhost:5672',
+      queue: 'x_ray',
+    }),
     MongooseModule.forFeature([{ name: XRay.name, schema: XRaySchema }]),
   ],
   providers: [SignalService],

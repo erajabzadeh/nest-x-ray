@@ -1,9 +1,11 @@
 import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({
+  collection: 'x_rays',
+})
 export class XRay {
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   deviceId: string;
 
   @Prop({ required: true })
@@ -13,17 +15,11 @@ export class XRay {
   dataLength: number;
 
   @Prop()
-  dataVolume: Array<
-    [
-      number,
-      [
-        mongoose.Schema.Types.Decimal128,
-        mongoose.Schema.Types.Decimal128,
-        mongoose.Schema.Types.Decimal128,
-      ],
-    ]
-  >;
+  dataVolume: Array<[number, [number, number, number]]>;
 }
 
 export type XRayDocument = mongoose.HydratedDocument<XRay>;
+
 export const XRaySchema = SchemaFactory.createForClass(XRay);
+
+XRaySchema.index({ deviceId: 1, time: 1 }, { unique: true, sparse: true });

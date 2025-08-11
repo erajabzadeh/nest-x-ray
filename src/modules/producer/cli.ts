@@ -1,9 +1,13 @@
-import { CommandFactory } from 'nest-commander';
+import { NestFactory } from '@nestjs/core';
 import { ProducerModule } from './producer.module';
+import { ProducerService } from './services/producer.service';
 
 async function bootstrap() {
-  console.log('args', process.argv);
-  await CommandFactory.run(ProducerModule);
+  const app = await NestFactory.createApplicationContext(ProducerModule);
+  await app.get(ProducerService).generate(2);
+  await app.close();
 }
 
-void bootstrap();
+bootstrap()
+  .then(() => process.exit())
+  .catch((err) => console.error(err));

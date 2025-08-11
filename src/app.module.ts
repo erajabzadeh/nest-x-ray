@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { RabbitMQModule } from './modules/rabbitmq/rabbitmq.module';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import { SignalModule } from './modules/signal/signal.module';
 
 @Module({
   imports: [
-    RabbitMQModule.register({
-      url: 'amqp://admin:password@localhost:5672',
-      queue: 'x_ray',
+    MongooseModule.forRoot('mongodb://admin:password@localhost:27017/xray_db', {
+      authSource: 'admin',
     }),
-    MongooseModule.forRoot('mongodb://localhost/x_ray'),
+    SignalModule,
   ],
 })
 export class AppModule {}

@@ -1,8 +1,14 @@
 import { Module } from '@nestjs/common';
-import { RabbitMQChannel } from '../rabbitmq/providers/rabbitmq-channel.provider';
-import { GenerateXRayDataCommand } from './commands/generate-x-ray-data.command';
+import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
+import { ProducerService } from './services/producer.service';
 
 @Module({
-  imports: [RabbitMQChannel, GenerateXRayDataCommand],
+  imports: [
+    RabbitMQModule.register({
+      url: 'amqp://admin:password@localhost:5672',
+      queue: 'x_ray',
+    }),
+  ],
+  providers: [ProducerService],
 })
 export class ProducerModule {}
