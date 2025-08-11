@@ -8,7 +8,5 @@ import { RabbitMQModule } from './modules/rabbitmq/rabbitmq.module';
       queue: 'x_ray',
     }),
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
