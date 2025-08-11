@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
 import { ChannelWrapper } from 'amqp-connection-manager';
 import Rx from 'rxjs';
 
@@ -6,7 +6,24 @@ import { MODULE_OPTIONS_TOKEN } from '../rabbitmq.module-definition';
 import { RabbitMQConnection } from './rabbitmq-connection.provider';
 import type { RabbitMQModuleOptions } from '../interfaces/rabbitmq-module-options.interface';
 
-@Injectable()
+type XRayPayload = Record<
+  string, // deviceId
+  {
+    time: number; // timestamp
+    data: [
+      [
+        number, // time
+        [
+          number, // x-coord
+          number, // y-coord
+          number, // speed
+        ],
+      ],
+    ];
+  }
+>;
+
+@Injectable({ scope: Scope.TRANSIENT })
 export class RabbitMQChannel {
   private readonly queue: string;
   private readonly channel: ChannelWrapper;
@@ -36,12 +53,14 @@ export class RabbitMQChannel {
       });
   }
 
-  consumer<T = unknown>() {
-    return new Rx.Observable<T>((subscriber) => {
+  consumer() {
+    return new Rx.Observable<XRayPayload>((subscriber) => {
       void this.channel.consume(this.queue, (message) => {
         if (message !== null) {
           try {
-            const payload = JSON.parse(message.content.toString()) as T;
+            const payload = JSON.parse(
+              message.content.toString(),
+            ) as XRayPayload;
             subscriber.next(payload);
           } catch (err) {
             subscriber.error(err);
