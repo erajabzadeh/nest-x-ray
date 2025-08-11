@@ -1,8 +1,8 @@
+import { inspect } from 'node:util';
+import pMap from 'p-map';
 import { Model } from 'mongoose';
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { inspect } from 'node:util';
-import * as Rx from 'rxjs';
 
 import {
   RabbitMQChannel,
@@ -19,23 +19,15 @@ export class SignalService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.channel
-      .consumer()
-      .pipe(Rx.mergeMap((value) => this.transform(value)))
-      .subscribe({
-        next: (value) => {
-          this.logger.debug(
-            `Inserting x-ray document ${inspect(value, false, null)}`,
-          );
-          void this.upsert(value);
-        },
-        error: (error) => {
-          this.logger.error('Channel error', error);
-        },
+    this.channel.consume(async (payload) => {
+      await pMap(this.transform(payload), (xray) => this.upsert(xray), {
+        concurrency: 5,
       });
+    });
   }
 
   async upsert(xray: XRay) {
+    this.logger.debug(`Saving x-ray document ${inspect(xray, false, null)}`);
     try {
       await this.xrayModel.updateOne(
         { deviceId: xray.deviceId, time: xray.time },

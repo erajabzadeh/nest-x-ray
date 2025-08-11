@@ -7,7 +7,7 @@ import {
   Scope,
 } from '@nestjs/common';
 import { ChannelWrapper } from 'amqp-connection-manager';
-import * as Rx from 'rxjs';
+import type { ConsumeMessage } from 'amqplib';
 
 import { MODULE_OPTIONS_TOKEN } from '../rabbitmq.module-definition';
 import { RabbitMQConnection } from './rabbitmq-connection.provider';
@@ -46,9 +46,9 @@ export class RabbitMQChannel implements OnModuleInit, OnModuleDestroy {
 
   async onModuleInit() {
     await this.wrapper
-      .assertQueue(this.queue)
+      .assertQueue(this.queue, { durable: true })
       .then((res) => {
-        this.logger.log('RabbitMQ queue asserted', res);
+        this.logger.log('RabbitMQ queue existence asserted', res);
       })
       .catch((err) => {
         this.logger.error('RabbitMQ queue assertion failed', err);
@@ -59,29 +59,28 @@ export class RabbitMQChannel implements OnModuleInit, OnModuleDestroy {
     await this.wrapper?.close();
   }
 
-  consumer() {
-    return new Rx.Observable<XRayPayload>((subscriber) => {
-      void this.wrapper.consume(
-        this.queue,
-        (message) => {
-          if (message !== null) {
-            try {
-              const payload = JSON.parse(
-                message.content.toString(),
-              ) as XRayPayload;
-              subscriber.next(payload);
-            } catch (err) {
-              subscriber.error(err);
-            }
+  consume(cb: (payload: XRayPayload) => Promise<void>) {
+    const handleMessage = (message: ConsumeMessage) => {
+      if (message === null) {
+        // cancelled by server
+        return;
+      }
+
+      try {
+        const payload = JSON.parse(message.content.toString()) as XRayPayload;
+        void cb(payload)
+          .then(() => {
             this.wrapper.ack(message);
-          } else {
-            // cancelled by server
-            subscriber.complete();
-          }
-        },
-        { prefetch: 1 },
-      );
-    });
+          })
+          .catch((err) => {
+            this.logger.error('Error handling message', err);
+          });
+      } catch (err) {
+        this.logger.error('Error parsing message content', err);
+      }
+    };
+
+    void this.wrapper.consume(this.queue, handleMessage, { prefetch: 1 });
   }
 
   async publish(message: string) {
