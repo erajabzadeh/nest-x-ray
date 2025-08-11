@@ -1,23 +1,19 @@
 import crypto from 'node:crypto';
-import { inspect } from 'node:util';
 import { Injectable, Logger } from '@nestjs/common';
 
-import { RabbitMQChannel } from '../../rabbitmq/providers/rabbitmq-channel.provider';
+import { RabbitMQService } from '../../rabbitmq/services/rabbitmq.service';
 
 @Injectable()
 export class ProducerService {
   private readonly logger = new Logger(ProducerService.name);
 
-  constructor(private readonly channel: RabbitMQChannel) {}
+  constructor(private readonly rabbitMQService: RabbitMQService) {}
 
-  async generate(count: number) {
+  async produce(count: number) {
     await Promise.all(
       Array.from({ length: count }).map(() => {
         const payload = this.randomPayload();
-        this.logger.debug(
-          `Publishing message ${inspect(payload, false, null)}`,
-        );
-        return this.channel.publish(JSON.stringify(payload));
+        return this.rabbitMQService.publish(JSON.stringify(payload));
       }),
     );
   }

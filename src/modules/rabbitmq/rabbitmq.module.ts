@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
+
 import { ConfigurableModuleClass } from './rabbitmq.module-definition';
-import { RabbitMQConnection } from './providers/rabbitmq-connection.provider';
-import { RabbitMQChannel } from './providers/rabbitmq-channel.provider';
+import { RabbitMQService } from './services/rabbitmq.service';
 
 @Module({
-  providers: [RabbitMQConnection, RabbitMQChannel],
-  exports: [RabbitMQChannel],
+  providers: [RabbitMQService],
+  exports: [RabbitMQService],
 })
 export class RabbitMQModule extends ConfigurableModuleClass {}

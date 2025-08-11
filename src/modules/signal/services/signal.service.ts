@@ -4,22 +4,22 @@ import { Model } from 'mongoose';
 import { Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import {
-  RabbitMQChannel,
-  type XRayPayload,
-} from '../../rabbitmq/providers/rabbitmq-channel.provider';
 import { XRay } from '../schemas/x-ray.schema';
+import {
+  RabbitMQService,
+  type XRayPayload,
+} from '../../rabbitmq/services/rabbitmq.service';
 
 export class SignalService implements OnModuleInit {
   private readonly logger = new Logger(SignalService.name);
 
   constructor(
-    private readonly channel: RabbitMQChannel,
+    private readonly rabbitMQService: RabbitMQService,
     @InjectModel(XRay.name) private readonly xrayModel: Model<XRay>,
   ) {}
 
   onModuleInit() {
-    this.channel.consume(async (payload) => {
+    this.rabbitMQService.consume(async (payload) => {
       await pMap(this.transform(payload), (xray) => this.upsert(xray), {
         concurrency: 5,
       });
