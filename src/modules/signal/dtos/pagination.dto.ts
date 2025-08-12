@@ -2,15 +2,15 @@ import { tags } from 'typia';
 
 export interface Page<T> {
   data: T[];
-  pagination: Pagination;
+  pagination: PaginationDto;
 }
 
-export interface PageQuery {
+export interface PageQueryDto {
   page?: number & tags.Type<'uint32'>;
   limit?: number & tags.Type<'uint32'>;
 }
 
-export interface Pagination {
+export interface PaginationDto {
   current: number & tags.Type<'uint32'>;
   limit: number & tags.Type<'uint32'>;
   records: number & tags.Type<'uint32'>;

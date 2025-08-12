@@ -1,4 +1,5 @@
-## Nest X-Ray [![CI](https://github.com/erajabzadeh/nest-x-ray/actions/workflows/ci.yaml/badge.svg)](https://github.com/erajabzadeh/nest-x-ray/actions/workflows/ci.yaml)
+## Nest X-Ray
+[![CI](https://github.com/erajabzadeh/nest-x-ray/actions/workflows/ci.yaml/badge.svg)](https://github.com/erajabzadeh/nest-x-ray/actions/workflows/ci.yaml)
 
 ### Project structure
 - Modules
@@ -7,7 +8,7 @@
   - `ProducerModule` provides a dummy data producer for generating random x-ray data
 - Assumptions
   - X-Ray message records may contain data for multiple devices e.g.
-    ```json
+    ```
     {
       "device1": {...},
       "device2": {...}
@@ -43,7 +44,7 @@
   ```
 
 
-### Running the main app
+### Main app
 
 ```bash
 # development
@@ -60,7 +61,7 @@ Open `http://localhost:3000/docs` for API documentation.
 
 
 
-### Running the producer
+### Producer
 
 ```bash
 # replace <N> with the number of records you want to generate
@@ -68,7 +69,7 @@ $ npm run start:producer <N>
 ```
 
 
-### Running the unit tests
+### Unit tests
 
 ```bash
 $ npm run test

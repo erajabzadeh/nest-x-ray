@@ -1,6 +1,6 @@
 import { tags } from 'typia';
 
-import { PageQuery } from './pagination.dto';
+import { PageQueryDto } from './pagination.dto';
 import type { ObjectId } from '../types';
 
 export interface XRayDto {
@@ -14,10 +14,10 @@ export interface XRayDto {
 export type CreateXRayDto = Omit<XRayDto, 'id' | 'dataLength'>;
 export type UpdateXRayDto = Partial<CreateXRayDto>;
 
-export interface XRayFilterQuery {
+export interface XRayFilterQueryDto {
   deviceId?: string;
   before?: number & tags.Type<'uint64'> & tags.Minimum<0>;
   after?: number & tags.Type<'uint64'> & tags.Minimum<0>;
 }
 
-export type XRayListQueryDto = PageQuery & XRayFilterQuery;
+export type XRayListQueryDto = PageQueryDto & XRayFilterQueryDto;

@@ -7,7 +7,7 @@ import {
   CreateXRayDto,
   UpdateXRayDto,
   XRayDto,
-  XRayFilterQuery,
+  XRayFilterQueryDto,
 } from '../dtos/signal.dto';
 import {
   type PersistedXRay,
@@ -25,7 +25,7 @@ export class SignalCrudService {
   async getPage(
     page: number | undefined,
     limit: number | undefined,
-    filters: XRayFilterQuery,
+    filters: XRayFilterQueryDto,
   ): Promise<Page<XRayDto>> {
     page ??= 1;
     limit ??= DEFAULT_API_PAGE_SIZE;
