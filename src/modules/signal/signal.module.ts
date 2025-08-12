@@ -6,6 +6,8 @@ import { XRay, XRaySchema } from './schemas/x-ray.schema';
 import { SignalService } from './services/signal.service';
 import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
 import { DEFAULT_QUEUE } from '../../constants';
+import { SignalCrudService } from './services/signal-crud.service';
+import { SignalController } from './controllers/signal.controller';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { DEFAULT_QUEUE } from '../../constants';
     }),
     MongooseModule.forFeature([{ name: XRay.name, schema: XRaySchema }]),
   ],
-  providers: [SignalService],
+  controllers: [SignalController],
+  providers: [SignalService, SignalCrudService],
 })
 export class SignalModule {}

@@ -8,7 +8,7 @@ export class XRay {
   @Prop({ type: mongoose.Schema.Types.String, required: true })
   deviceId: string;
 
-  @Prop({ type: mongoose.Schema.Types.BigInt, required: true })
+  @Prop({ type: mongoose.Schema.Types.Int32, required: true })
   time: number;
 
   @Prop({ type: mongoose.Schema.Types.Int32, default: 0 })
