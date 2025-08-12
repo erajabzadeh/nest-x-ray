@@ -19,27 +19,36 @@ export class SignalService implements OnModuleInit {
   ) {}
 
   onModuleInit() {
-    this.rabbitMQService.consume(async (payload) => {
-      await pMap(this.transform(payload), (xray) => this.upsert(xray), {
-        concurrency: 5,
-      });
-    });
+    this.rabbitMQService.consume((payload) => this.processXRayMessage(payload));
+  }
+
+  private async processXRayMessage(payload: XRayPayload) {
+    const xrays = this.transform(payload);
+    await pMap(xrays, (xray) => this.upsert(xray), { concurrency: 5 });
   }
 
   async upsert(xray: XRay) {
+    if (!xray.deviceId) {
+      throw new Error('Invalid deviceId');
+    }
+    if (!xray.time) {
+      throw new Error('Invalid time');
+    }
+
     this.logger.debug(`Saving x-ray document ${inspect(xray, false, null)}`);
     try {
-      await this.xrayModel.updateOne(
+      const result = await this.xrayModel.updateOne(
         { deviceId: xray.deviceId, time: xray.time },
         { $set: xray },
         { upsert: true },
       );
+      return result.upsertedCount;
     } catch (err) {
       this.logger.error('Error saving x-ray document', err);
     }
   }
 
-  transform(payload: XRayPayload): XRay[] {
+  transform(payload: Readonly<XRayPayload>): XRay[] {
     const records = Object.entries(payload).map(
       ([deviceId, { data, time }]) => ({
         deviceId,

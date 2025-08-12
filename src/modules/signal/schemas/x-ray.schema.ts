@@ -5,16 +5,16 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
   collection: 'x_rays',
 })
 export class XRay {
-  @Prop({ required: true })
+  @Prop({ type: mongoose.Schema.Types.String, required: true })
   deviceId: string;
 
-  @Prop({ required: true })
+  @Prop({ type: mongoose.Schema.Types.BigInt, required: true })
   time: number;
 
-  @Prop({ default: 0 })
+  @Prop({ type: mongoose.Schema.Types.Int32, default: 0 })
   dataLength: number;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.Array })
   dataVolume: Array<[number, [number, number, number]]>;
 }
 
