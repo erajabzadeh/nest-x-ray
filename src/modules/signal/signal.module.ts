@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { XRay, XRaySchema } from './schemas/x-ray.schema';
 import { SignalService } from './services/signal.service';
 import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
-import { DEFAULT_QUEUE } from '../../constants';
+import { DEFAULT_QUEUE_NAME } from '../../constants';
 import { SignalCrudService } from './services/signal-crud.service';
 import { SignalController } from './controllers/signal.controller';
 
@@ -17,7 +17,7 @@ import { SignalController } from './controllers/signal.controller';
           'RABBITMQ_URL',
           'amqp://admin:password@localhost:5672',
         ),
-        queue: DEFAULT_QUEUE,
+        queue: DEFAULT_QUEUE_NAME,
       }),
       inject: [ConfigService],
     }),
