@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 
-import { DEFAULT_QUEUE_NAME } from '@/constants';
+import { DEFAULT_QUEUE_NAME } from '../../constants';
 import { XRay, XRaySchema } from './schemas/x-ray.schema';
 import { SignalService } from './services/signal.service';
 import { SignalCrudService } from './services/signal-crud.service';

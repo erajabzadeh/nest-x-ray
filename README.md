@@ -58,7 +58,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-REST API documentation will be accessible at `http://localhost:3000/docs`.
+REST API documentation can be viewed at `http://localhost:3000/docs`.
 
 
 

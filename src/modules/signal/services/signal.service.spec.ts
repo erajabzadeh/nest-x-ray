@@ -5,7 +5,7 @@ import { SignalService } from './signal.service';
 import {
   RabbitMQService,
   type XRayPayload,
-} from '@/modules/rabbitmq/services/rabbitmq.service';
+} from '../../rabbitmq/services/rabbitmq.service';
 import { Model } from 'mongoose';
 import { XRay } from '../schemas/x-ray.schema';
 

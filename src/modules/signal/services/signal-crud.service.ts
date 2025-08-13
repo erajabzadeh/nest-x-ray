@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, RootFilterQuery } from 'mongoose';
 
-import { DEFAULT_API_PAGE_SIZE } from '@/constants';
+import { DEFAULT_API_PAGE_SIZE } from '../../../constants';
 import {
   CreateXRayDto,
   UpdateXRayDto,
