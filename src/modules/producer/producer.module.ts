@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { DEFAULT_QUEUE_NAME } from '@/constants';
 import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
 import { ProducerService } from './services/producer.service';
-import { DEFAULT_QUEUE_NAME } from '../../constants';
 
 @Module({
   imports: [

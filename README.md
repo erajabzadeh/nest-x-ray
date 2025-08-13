@@ -4,10 +4,10 @@
 ### Project structure
 - Modules
   - `RabbitMQModule` provides RabbitMQ functionality through `RabbitMQService`
-  - `SignalModule` provides the main x-ray data consumer (`SignalService`) and x-ray CRUD operations (`SignalCrudService`)
-  - `ProducerModule` provides a dummy data producer for generating random x-ray data
+  - `SignalModule` provides the main x-ray data consumer (`SignalService`) and CRUD operations (`SignalCrudService`)
+  - `ProducerModule` provides a cli for generating random data (see the [Producer](#Producer) section below)
 - Assumptions
-  - X-Ray message records may contain data for multiple devices e.g.
+  - Messages might contain data for multiple devices e.g.
     ```
     {
       "device1": {...},
@@ -15,8 +15,8 @@
       ...
     }
     ```
-  - Unprocessable messages will not be acknowledged (and not moved to a DLQ, mainly to keep the implementation simple).
-  - `(deviceId, time)` tuples are uniqe. If a message for an existing `(deviceId, time)` tuple is received, db values will be updated with the latest received values.
+  - `(deviceId, time)` tuples are uniqe. If a message for an existing `(deviceId, time)` tuple is received, db values will be replaced with the latest received values.
+  - Message are valid according to the pre-defined format. Unprocessable messages (with a missing time value for example) won't be acknowledged or rejected.
 
 
 ### Pre-requisites
@@ -38,13 +38,14 @@
   ```bash
   $ docker compose up -d
   ```
-4.  Create a local `.env` file
+4.  Create a local `.env` file and update the values, if not using the default service settings
   ```bash
   $ cp .env.template .env
   ```
 
 
 ### Main app
+To run the main application (queue consumer, api):
 
 ```bash
 # development
@@ -57,11 +58,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-Open `http://localhost:3000/docs` for API documentation.
+REST API documentation will be accessible at `http://localhost:3000/docs`.
 
 
 
 ### Producer
+To generate random data messages on the default queue:
 
 ```bash
 # replace <N> with the number of records you want to generate
@@ -74,3 +76,11 @@ $ npm run start:producer <N>
 ```bash
 $ npm run test
 ```
+
+
+### Future improvements
+- More robust malformed/invalid message handling (retries, dead-lettering, ...)
+- Integration/e2e tests
+- Error monitoring/alerting
+- Healthcheck and metrics endpoints
+- Performance monitoring/reporting

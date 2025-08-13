@@ -28,10 +28,10 @@ export class SignalService implements OnModuleInit {
   }
 
   async upsert(xray: XRay) {
-    if (!xray.deviceId) {
+    if (!xray.deviceId?.trim()) {
       throw new Error('Invalid deviceId');
     }
-    if (!xray.time) {
+    if (!Number.isSafeInteger(xray.time) || xray.time <= 0) {
       throw new Error('Invalid time');
     }
 

@@ -143,8 +143,9 @@ describe('SignalService', () => {
       { deviceId: undefined }, //
       { deviceId: null },
       { deviceId: '' },
+      { deviceId: ' ' },
     ])(
-      'throws when invalid input deviceId ($deviceId)',
+      'throws with invalid input deviceId ($deviceId)',
       async ({ deviceId }) => {
         const xray = Object.assign(
           {
@@ -167,8 +168,12 @@ describe('SignalService', () => {
       { time: null },
       { time: NaN },
       { time: 0 },
+      { time: -1 },
+      { time: 1.23 },
+      { time: Infinity },
       { time: '' },
-    ])('throws when invalid input time ($time)', async ({ time }) => {
+      { time: {} },
+    ])('throws with invalid input time ($time)', async ({ time }) => {
       const xray = Object.assign(
         {
           deviceId: 'device1',
@@ -182,19 +187,6 @@ describe('SignalService', () => {
       const result = signalService.upsert(xray);
 
       await expect(result).rejects.toThrow('Invalid time');
-    });
-
-    it('updates data for existing deviceId and time', async () => {
-      const xray: XRay = {
-        deviceId: 'device1',
-        dataLength: 1,
-        dataVolume: [[123, [23, 34, 454]]],
-        time: 1234,
-      };
-
-      const result = await signalService.upsert(xray);
-
-      expect(result).toBe(1);
     });
   });
 

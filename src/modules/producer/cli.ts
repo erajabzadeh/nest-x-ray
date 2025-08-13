@@ -1,5 +1,6 @@
-import { NestFactory } from '@nestjs/core';
 import { parseArgs } from 'node:util';
+import { NestFactory } from '@nestjs/core';
+
 import { ProducerModule } from './producer.module';
 import { ProducerService } from './services/producer.service';
 

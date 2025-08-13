@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 
+import { DEFAULT_QUEUE_NAME } from '@/constants';
 import { XRay, XRaySchema } from './schemas/x-ray.schema';
 import { SignalService } from './services/signal.service';
-import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
-import { DEFAULT_QUEUE_NAME } from '../../constants';
 import { SignalCrudService } from './services/signal-crud.service';
 import { SignalController } from './controllers/signal.controller';
+import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
